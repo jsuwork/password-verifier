@@ -28,7 +28,7 @@ function validatePassword(password, strictMode) {
   // Detect instances of uppercase letters, lowercase letters and numbers
   for (
     let i = 0;
-    i < password.length && (!hasUpperCase | !hasLowerCase | !hasNumber);
+    i < password.length && (!hasUpperCase || !hasLowerCase || !hasNumber);
     i++
   ) {
     const charCode = password.charCodeAt(i);
