@@ -1,6 +1,12 @@
-require("../src/errors");
 const validatePassword = require("../src");
-const { PasswordValidationError, PasswordTooShortError, PasswordNullError } = require("../src/errors");
+const {
+  PasswordValidationError,
+  PasswordTooShortError,
+  PasswordNullError,
+  PasswordMissingUpperCaseError,
+  PasswordMissingLowerCaseError,
+  PasswordMissingNumberError,
+} = require("../src/errors");
 
 describe("Item 1 - Password must be longer than 8 characters", () => {
   it("fails criteria when password less than 8 characters", () => {
@@ -33,7 +39,7 @@ describe("Item 1 - Password must be longer than 8 characters", () => {
       expect(hasRelevantError).toBe(true);
     }
   });
-  it("passes criteria when password longer 8 characters", () => {
+  it("passes criteria when password longer than 8 characters", () => {
     try {
       validatePassword("123456789", true);
     } catch (e) {
@@ -119,6 +125,39 @@ describe("Item 2 - Password must not be null", () => {
       let stillHasSpecificError = false;
       for (let error of e.errors) {
         if (error instanceof PasswordNullError) {
+          stillHasSpecificError = true;
+          break;
+        }
+      }
+      expect(stillHasSpecificError).toBe(false);
+    }
+  });
+});
+
+describe("Item 3 - Password must have at least one uppercase letter", () => {
+  it("fails criteria when password has no uppercase letter", () => {
+    try {
+      validatePassword("123abc!@#", true);
+    } catch (e) {
+      expect(e).toEqual(jasmine.any(PasswordValidationError));
+      let hasRelevantError = false;
+      for (let error of e.errors) {
+        if (error instanceof PasswordMissingUpperCaseError) {
+          hasRelevantError = true;
+          break;
+        }
+      }
+      expect(hasRelevantError).toBe(true);
+    }
+  });
+  it("passes criteria when password has at least one uppercase letter", () => {
+    try {
+      validatePassword("123abcABC", true);
+    } catch (e) {
+      expect(e).toEqual(jasmine.any(PasswordValidationError));
+      let stillHasSpecificError = false;
+      for (let error of e.errors) {
+        if (error instanceof PasswordMissingUpperCaseError) {
           stillHasSpecificError = true;
           break;
         }
