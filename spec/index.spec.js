@@ -199,3 +199,36 @@ describe("Item 4 - Password must have at least one lowercase letter", () => {
     }
   });
 });
+
+describe("Item 5 - Password must have at least one number", () => {
+  it("fails criteria when password has no number", () => {
+    try {
+      validatePassword("ABC!@#", true);
+    } catch (e) {
+      expect(e).toEqual(jasmine.any(PasswordValidationError));
+      let hasRelevantError = false;
+      for (let error of e.errors) {
+        if (error instanceof PasswordMissingNumberError) {
+          hasRelevantError = true;
+          break;
+        }
+      }
+      expect(hasRelevantError).toBe(true);
+    }
+  });
+  it("passes criteria when password has at least one number", () => {
+    try {
+      validatePassword("123ABC", true);
+    } catch (e) {
+      expect(e).toEqual(jasmine.any(PasswordValidationError));
+      let stillHasSpecificError = false;
+      for (let error of e.errors) {
+        if (error instanceof PasswordMissingNumberError) {
+          stillHasSpecificError = true;
+          break;
+        }
+      }
+      expect(stillHasSpecificError).toBe(false);
+    }
+  });
+});
