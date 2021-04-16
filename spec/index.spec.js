@@ -166,3 +166,36 @@ describe("Item 3 - Password must have at least one uppercase letter", () => {
     }
   });
 });
+
+describe("Item 4 - Password must have at least one lowercase letter", () => {
+  it("fails criteria when password has no lowercase letter", () => {
+    try {
+      validatePassword("123ABC!@#", true);
+    } catch (e) {
+      expect(e).toEqual(jasmine.any(PasswordValidationError));
+      let hasRelevantError = false;
+      for (let error of e.errors) {
+        if (error instanceof PasswordMissingLowerCaseError) {
+          hasRelevantError = true;
+          break;
+        }
+      }
+      expect(hasRelevantError).toBe(true);
+    }
+  });
+  it("passes criteria when password has at least one lowercase letter", () => {
+    try {
+      validatePassword("123ABCabcdef", true);
+    } catch (e) {
+      expect(e).toEqual(jasmine.any(PasswordValidationError));
+      let stillHasSpecificError = false;
+      for (let error of e.errors) {
+        if (error instanceof PasswordMissingLowerCaseError) {
+          stillHasSpecificError = true;
+          break;
+        }
+      }
+      expect(stillHasSpecificError).toBe(false);
+    }
+  });
+});
