@@ -232,3 +232,22 @@ describe("Item 5 - Password must have at least one number", () => {
     }
   });
 });
+
+describe("Additional Requirements", () => {
+  it("passes if 3 of 5 conditions satisfied, including item 4", () => {
+    try {
+      // Passes 1, 2 and 4
+      validatePassword("abcdefghi");
+    } catch (e) {
+      fail("Unexpected Error thrown");
+    }
+  });
+  it("fails if 3 of 5 conditions satisfied, but item 4 unsatisfied", () => {
+    try {
+      // Passes 1, 2, 3, but not 4
+      validatePassword("ABCDEF!@#");
+    } catch (e) {
+      expect(e).toEqual(jasmine.any(PasswordValidationError));
+    }
+  });
+});
